@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 import {
   createUserDocumentFromAuth,
@@ -27,8 +28,13 @@ const SignInForm = () => {
   const resetFormFields = () => setFormFields(defaultFormFields);
 
   const logGoogleUser = async () => {
-    const { user } = await signInWithGooglePopup();
-    await createUserDocumentFromAuth(user);
+    try {
+      const { user } = await signInWithGooglePopup();
+      await createUserDocumentFromAuth(user);
+    } catch (error) {
+      toast.error(error?.message || 'Something went wrong');
+      console.log(error);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -39,9 +45,11 @@ const SignInForm = () => {
       resetFormFields();
     } catch (error) {
       if (error.code === 'auth/invalid-credential') {
-        alert('invalid credentials')
+        toast.error('Invalid credentials. Please try again.');
+      } else {
+        toast.error(error?.message || 'Something went wrong');
       }
-      console.log(error);
+      console.log('Error signing in user ',error);
     }
   };
 
@@ -68,10 +76,12 @@ const SignInForm = () => {
           value={password}
         />
 
-        <div className="buttons-container">
-        <Button type='submit'>Sign In</Button>
-        <Button buttonType="google" onClick={logGoogleUser}>Google Sign In</Button>
-        </div> 
+        <div className='buttons-container'>
+          <Button type='submit'>Sign In</Button>
+          <Button type='button' buttonType='google' onClick={logGoogleUser}>
+            Google Sign In
+          </Button>
+        </div>
       </form>
     </div>
   );

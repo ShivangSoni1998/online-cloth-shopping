@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 import {
   createAuthUserWithEmailAndPassword,
@@ -46,9 +47,10 @@ const SignUpForm = () => {
       resetFormFields();
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
-        alert('Cannot create user, email already in use');
+        toast.error('Cannot create user, email already in use');
       } else {
-        console.log('user creation encountered an error', error);
+        toast.error('Error creating an account. Please try again.');
+        console.error('User registration encountered an error.', error);
       }
     }
   };
