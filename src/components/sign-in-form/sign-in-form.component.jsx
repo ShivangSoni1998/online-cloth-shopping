@@ -9,6 +9,7 @@ import {
 import FormInput from '../form-input/form-input.component';
 import './sign-in-form.styles.scss';
 import Button from '../button/button.component';
+import { ERROR_CODES, ERROR_MESSAGES } from '../../constants/errorMessages';
 
 const defaultFormFields = {
   email: '',
@@ -32,7 +33,7 @@ const SignInForm = () => {
       const { user } = await signInWithGooglePopup();
       await createUserDocumentFromAuth(user);
     } catch (error) {
-      toast.error(error?.message || 'Something went wrong');
+      toast.error(error?.message || ERROR_MESSAGES.GENERAL_ERROR);
       console.log(error);
     }
   };
@@ -44,12 +45,8 @@ const SignInForm = () => {
       await signInAuthUserWithEmailAndPassword(email, password);
       resetFormFields();
     } catch (error) {
-      if (error.code === 'auth/invalid-credential') {
-        toast.error('Invalid credentials. Please try again.');
-      } else {
-        toast.error(error?.message || 'Something went wrong');
-      }
-      console.log('Error signing in user ',error);
+      toast.error(ERROR_MESSAGES[error.code] ?? ERROR_MESSAGES.GENERAL_ERROR);
+      console.log('Error signing in user ', error);
     }
   };
 

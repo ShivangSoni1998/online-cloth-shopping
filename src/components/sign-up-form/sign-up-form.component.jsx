@@ -8,6 +8,7 @@ import {
 import FormInput from '../form-input/form-input.component';
 import './sign-up-form.styles.scss';
 import Button from '../button/button.component';
+import { ERROR_MESSAGES } from '../../constants/errorMessages';
 
 const defaultFormFields = {
   displayName: '',
@@ -32,7 +33,7 @@ const SignUpForm = () => {
     event.preventDefault();
 
     if (password !== confirmPassword) {
-      alert('passwords do not match');
+      toast.error(ERROR_MESSAGES.PASSWORD_NOT_MATCH);
       return;
     }
 
@@ -46,12 +47,7 @@ const SignUpForm = () => {
 
       resetFormFields();
     } catch (error) {
-      if (error.code === 'auth/email-already-in-use') {
-        toast.error('Cannot create user, email already in use');
-      } else {
-        toast.error('Error creating an account. Please try again.');
-        console.error('User registration encountered an error.', error);
-      }
+      toast.error(ERROR_MESSAGES[error.code] ?? ERROR_MESSAGES.ACCOUNT_CREATION_ERROR);
     }
   };
 
