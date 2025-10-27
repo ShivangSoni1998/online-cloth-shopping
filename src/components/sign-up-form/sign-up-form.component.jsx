@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { useContext } from 'react';
 
 import {
   createAuthUserWithEmailAndPassword,
@@ -9,6 +10,7 @@ import FormInput from '../form-input/form-input.component';
 import './sign-up-form.styles.scss';
 import Button from '../button/button.component';
 import { ERROR_MESSAGES } from '../../constants/errorMessages';
+import { UserContext } from '../../contexts/user.context';
 
 const defaultFormFields = {
   displayName: '',
@@ -19,6 +21,7 @@ const defaultFormFields = {
 
 const SignUpForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
+  const { setCurrentUser } = useContext(UserContext);
 
   const { displayName, email, password, confirmPassword } = formFields;
 
@@ -42,23 +45,24 @@ const SignUpForm = () => {
         email,
         password
       );
-
+      setCurrentUser(user);
       await createUserDocumentFromAuth(user, { displayName });
 
       resetFormFields();
     } catch (error) {
-      toast.error(ERROR_MESSAGES[error.code] ?? ERROR_MESSAGES.ACCOUNT_CREATION_ERROR);
+      toast.error(
+        ERROR_MESSAGES[error.code] ?? ERROR_MESSAGES.ACCOUNT_CREATION_ERROR
+      );
     }
   };
 
   return (
-    <div className="sign-up-container">
+    <div className='sign-up-container'>
       <h2>Don't have an account</h2>
       <span>Sign up with your email and password</span>
       <form onSubmit={handleSubmit}>
-        
-        <FormInput 
-          label="Display Name"
+        <FormInput
+          label='Display Name'
           type='text'
           required
           onChange={handleChange}
@@ -66,8 +70,8 @@ const SignUpForm = () => {
           value={displayName}
         />
 
-        <FormInput 
-          label="Email"
+        <FormInput
+          label='Email'
           type='email'
           required
           onChange={handleChange}
@@ -75,8 +79,8 @@ const SignUpForm = () => {
           value={email}
         />
 
-        <FormInput 
-          label="Password"
+        <FormInput
+          label='Password'
           type='password'
           required
           onChange={handleChange}
@@ -84,8 +88,8 @@ const SignUpForm = () => {
           value={password}
         />
 
-        <FormInput 
-          label="Confirm Password"
+        <FormInput
+          label='Confirm Password'
           type='password'
           required
           onChange={handleChange}

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { useContext } from 'react';
 
 import {
   createUserDocumentFromAuth,
@@ -9,7 +10,8 @@ import {
 import FormInput from '../form-input/form-input.component';
 import './sign-in-form.styles.scss';
 import Button from '../button/button.component';
-import { ERROR_CODES, ERROR_MESSAGES } from '../../constants/errorMessages';
+import { ERROR_MESSAGES } from '../../constants/errorMessages';
+import { UserContext } from '../../contexts/user.context';
 
 const defaultFormFields = {
   email: '',
@@ -18,6 +20,7 @@ const defaultFormFields = {
 
 const SignInForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
+  const { setCurrentUser } = useContext(UserContext);
 
   const { email, password } = formFields;
 
@@ -42,7 +45,8 @@ const SignInForm = () => {
     event.preventDefault();
 
     try {
-      await signInAuthUserWithEmailAndPassword(email, password);
+      const { user } = await signInAuthUserWithEmailAndPassword(email, password);
+      setCurrentUser(user);
       resetFormFields();
     } catch (error) {
       toast.error(ERROR_MESSAGES[error.code] ?? ERROR_MESSAGES.GENERAL_ERROR);

@@ -5,13 +5,16 @@ import { ToastContainer } from 'react-toastify';
 
 import './index.scss';
 import App from './App';
+import { UserProvider } from './contexts/user.context';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <UserProvider>
+        <App />
+      </UserProvider>
       <ToastContainer />
     </BrowserRouter>
   </React.StrictMode>
